@@ -1,0 +1,493 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Thriftopia</title>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#ffffff"><link rel="apple-touch-icon" href="icon-512.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<style>
+/* Thriftopia — Cherry Pop. Presentation only. */
+:root,
+[data-theme=light] {
+  --bg: #fff8f5;
+  --fg: #24191d;
+  --card: #ffffff;
+  --soft: #ffe2ea;
+  --alt: #f7edf0;
+  --mut: #75616a;
+  --acc: #c9184a;
+  --on: #ffffff;
+  --ln: #eed7de;
+  --h1: #ffd7e4;
+  --h2: #ffe8ce;
+  --h3: #fff0f4;
+  --focus: rgba(201, 24, 74, .16);
+  --shadow: rgba(87, 35, 53, .07);
+  --float-shadow: rgba(87, 35, 53, .14);
+  --scrim: rgba(36, 25, 29, .45);
+  color-scheme: light;
+  box-sizing: border-box;
+}
+[data-theme=dark] {
+  --bg: #171216;
+  --fg: #fff7fa;
+  --card: #241b22;
+  --soft: #3b2330;
+  --alt: #32262f;
+  --mut: #c3aeb9;
+  --acc: #ff789c;
+  --on: #24191d;
+  --ln: #503441;
+  --h1: #482434;
+  --h2: #392a26;
+  --h3: #2e2029;
+  --focus: rgba(255, 120, 156, .20);
+  --shadow: rgba(0, 0, 0, .17);
+  --float-shadow: rgba(0, 0, 0, .35);
+  --scrim: rgba(7, 4, 6, .66);
+  color-scheme: dark;
+}
+/* Existing additional appearance choices retain their colour values. */
+[data-theme=blue] {
+  --bg: #0d1b2e;
+  --fg: #f2f7ff;
+  --card: #183052;
+  --soft: #13263f;
+  --alt: #22406b;
+  --mut: #9bb3d4;
+  --acc: #4ba3ff;
+  --on: #06162b;
+  --ln: #2b4670;
+  --h1: #1c3a66;
+  --h2: #27345f;
+  --h3: #0f4256;
+  --focus: rgba(75, 163, 255, .20);
+  --shadow: rgba(0, 0, 0, .17);
+  --float-shadow: rgba(0, 0, 0, .35);
+  --scrim: rgba(3, 9, 17, .66);
+  color-scheme: dark;
+}
+[data-theme=green] {
+  --bg: #0c1f19;
+  --fg: #effaf4;
+  --card: #17382d;
+  --soft: #12291f;
+  --alt: #1f4a3a;
+  --mut: #9cc2b0;
+  --acc: #34d391;
+  --on: #04130d;
+  --ln: #2a5242;
+  --h1: #17513d;
+  --h2: #2a4a26;
+  --h3: #0f4650;
+  --focus: rgba(52, 211, 145, .20);
+  --shadow: rgba(0, 0, 0, .17);
+  --float-shadow: rgba(0, 0, 0, .35);
+  --scrim: rgba(3, 12, 9, .66);
+  color-scheme: dark;
+}
+[hidden] { display: none !important; }
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+html { min-height: 100%; }
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--fg);
+  font: 400 15px/1.55 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  padding-top: env(safe-area-inset-top);
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+}
+button, input, select, textarea { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible {
+  outline: 3px solid var(--acc);
+  outline-offset: 3px;
+}
+h1, h2, h3, .logo, .nm {
+  font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+h2 { font-size: 28px; font-weight: 800; letter-spacing: -.035em; line-height: 1.25; }
+h3 { font-size: 19px; letter-spacing: -.025em; line-height: 1.35; }
+header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px max(24px, calc((100vw - 1100px) / 2 + 24px));
+  background: var(--bg);
+  border-bottom: 1px solid var(--ln);
+}
+header > div:last-child { display: flex; align-items: center; gap: 9px; }
+.logo { font-size: 31px; font-weight: 800; letter-spacing: -.055em; line-height: 1.15; color: var(--acc); }
+.hb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 17px;
+  border: 1px solid var(--ln);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--fg);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform .16s, filter .16s;
+}
+.hb.bag { background: var(--acc); color: var(--on); border-color: var(--acc); }
+.hb:active { transform: scale(.97); }
+.tg {
+  position: relative;
+  width: 72px;
+  height: 44px;
+  flex: none;
+  padding: 0;
+  border: 1px solid var(--ln);
+  border-radius: 999px;
+  background: var(--soft);
+  cursor: pointer;
+}
+.tg .k {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--acc);
+  box-shadow: 0 2px 6px var(--float-shadow);
+  transition: transform .22s ease;
+}
+.tg svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; grid-area: 1/1; }
+.tg .moon { display: none; }
+:root[data-theme]:not([data-theme=light]) .tg .k { transform: translateX(28px); }
+:root[data-theme]:not([data-theme=light]) .tg .sun { display: none; }
+:root[data-theme]:not([data-theme=light]) .tg .moon { display: block; }
+.lnk { background: none; border: 0; color: var(--acc); font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+main { max-width: 1100px; margin: auto; padding: 22px 24px calc(124px + env(safe-area-inset-bottom)); }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 48px;
+  max-width: 100%;
+  padding: 13px 21px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--acc);
+  color: var(--on);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition: filter .15s, transform .15s;
+}
+.btn:active { transform: scale(.98); }
+.btn.alt { background: var(--alt); color: var(--fg); border-color: var(--ln); }
+.btn.full { width: 100%; }
+.btn.sm { min-height: 44px; padding: 10px 16px; font-size: 13px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; transform: none; filter: none; }
+input, select, textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 50px;
+  padding: 13px 15px;
+  margin: 7px 0 17px;
+  border: 1px solid var(--ln);
+  border-radius: 15px;
+  background: var(--card);
+  color: var(--fg);
+  font-size: 16px;
+  line-height: 1.45;
+  caret-color: var(--acc);
+  transition: border-color .15s, box-shadow .15s;
+}
+input::placeholder, textarea::placeholder { color: var(--mut); opacity: 1; }
+input:focus, select:focus, textarea:focus { border-color: var(--acc); box-shadow: 0 0 0 4px var(--focus); outline: 1px solid var(--acc); outline-offset: 0; }
+input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--fg);
+  -webkit-box-shadow: 0 0 0 1000px var(--card) inset;
+  caret-color: var(--acc);
+}
+input[type=checkbox], input[type=radio] { display: inline-block; min-height: 0; width: 18px; height: 18px; padding: 0; margin: 0 8px 0 0; vertical-align: middle; accent-color: var(--acc); }
+input[type=file] { padding: 11px; font-size: 13px; }
+input[type=file]::file-selector-button { border: 0; border-radius: 9px; padding: 8px 11px; margin-right: 10px; background: var(--soft); color: var(--fg); font: inherit; font-weight: 600; }
+textarea { min-height: 104px; resize: vertical; }
+#q { background: var(--card); border-color: var(--ln); border-radius: 999px; padding: 15px 21px; min-height: 52px; margin: 0 0 12px; }
+label { display: block; font-size: 13px; font-weight: 600; color: var(--mut); }
+.eyebrow { font-size: 12px; font-weight: 700; color: var(--acc); overflow-wrap: anywhere; }
+.chips { display: flex; gap: 8px; overflow-x: auto; padding: 5px 3px 20px; scrollbar-width: none; scroll-padding-inline: 3px; }
+.chips::-webkit-scrollbar { display: none; }
+.chip { flex: none; min-height: 44px; white-space: nowrap; padding: 10px 19px; border-radius: 999px; border: 1px solid var(--ln); background: var(--card); color: var(--fg); font-size: 13px; font-weight: 600; cursor: pointer; }
+.chip.on { background: var(--acc); border-color: var(--acc); color: var(--on); }
+.grid { display: block; column-count: 2; column-gap: 14px; }
+.card {
+  display: inline-block;
+  vertical-align: top;
+  width: 100%;
+  break-inside: avoid;
+  margin: 0 0 18px;
+  padding: 8px;
+  border: 1px solid var(--ln);
+  border-radius: 25px;
+  background: var(--card);
+  box-shadow: 0 5px 18px var(--shadow);
+  transition: box-shadow .18s, transform .18s;
+}
+.ph { position: relative; display: grid; place-items: center; overflow: hidden; border-radius: 18px; aspect-ratio: auto; }
+.ph img { position: static; display: block; width: 100%; max-width: 100%; height: auto; }
+.mono { font-size: clamp(56px, 9vw, 100px); color: #fff; opacity: .42; font-weight: 800; letter-spacing: -.05em; }
+.heart {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--ln);
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--acc);
+  font-size: 23px;
+  line-height: 1;
+  box-shadow: 0 2px 8px var(--shadow);
+  cursor: pointer;
+}
+.tag { position: absolute; left: 8px; top: 10px; background: var(--acc); color: var(--on); font-size: 11px; font-weight: 700; line-height: 1.3; padding: 6px 10px; border-radius: 999px; }
+.info { padding: 13px 6px 7px; }
+.nm { font-size: 14px; line-height: 1.35; letter-spacing: -.025em; margin-bottom: 4px; }
+.price { margin-top: 8px; font-size: 17px; font-weight: 800; letter-spacing: -.025em; color: var(--fg); }
+.card .btn { min-height: 44px; padding: 10px 11px !important; font-size: 13px !important; }
+.mut { color: var(--mut); font-size: 13px; line-height: 1.55; overflow-wrap: anywhere; }
+.info .mut { font-size: 12px; }
+.box { background: var(--card); border: 1px solid var(--ln); border-radius: 23px; padding: 21px; margin-bottom: 14px; overflow-wrap: anywhere; }
+nav {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  width: calc(100% - 24px);
+  max-width: 560px;
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  padding: 6px;
+  border: 1px solid var(--ln);
+  border-radius: 32px;
+  background: var(--card);
+  box-shadow: 0 10px 35px var(--float-shadow);
+  z-index: 6;
+}
+nav:empty { display: none; }
+nav button { flex: 1 1 0; min-width: 0; min-height: 57px; padding: 9px 2px 8px; border: 0; border-radius: 25px; background: none; color: var(--mut); font-size: 11px; line-height: 1.2; font-weight: 600; cursor: pointer; }
+nav svg { display: block; width: 21px; height: 21px; margin: 0 auto 5px; stroke-width: 1.8; }
+nav .on { background: var(--soft); color: var(--acc); font-weight: 700; }
+.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+  background: var(--scrim);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.sheet > div {
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  margin: auto;
+  padding: 30px 26px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ln) var(--card);
+  border: 1px solid var(--ln);
+  border-radius: 30px;
+  background: var(--card);
+  box-shadow: 0 24px 85px var(--float-shadow);
+}
+.sheet > div > .logo { margin-bottom: 5px; }
+.sheet .btn.full { display: flex; margin-top: 12px; }
+.row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 0; }
+.row > * { min-width: 0; overflow-wrap: anywhere; }
+.row.box { padding: 16px 20px; }
+.hero {
+  padding: 41px 25px 37px;
+  margin: 0 0 23px;
+  text-align: center;
+  border: 1px solid var(--ln);
+  border-radius: 32px;
+  background: radial-gradient(ellipse at 9% 5%, var(--h1), transparent 67%), radial-gradient(ellipse at 100% 98%, var(--h2), transparent 65%), radial-gradient(ellipse at 60% 110%, var(--h3), transparent 70%), var(--soft);
+}
+.hero h1 { font-size: clamp(34px, 6vw, 62px); font-weight: 800; line-height: 1.05; letter-spacing: -.055em; margin: 16px 0 14px; }
+.hero .mut { font-size: 14px; color: var(--fg); opacity: .8; }
+.hero .eyebrow { display: inline-block; background: var(--card); color: var(--fg); padding: 7px 15px; border-radius: 999px; font-size: 12px; line-height: 1.5; box-shadow: 0 2px 5px var(--shadow); }
+.acts { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
+.acts input, .acts select { flex: 1 1 150px; min-width: 0; margin: 0; padding: 11px 13px; font-size: 16px; }
+.acts .btn { flex: 0 1 auto; }
+@media (hover: hover) and (pointer: fine) {
+  .btn:not(:disabled):hover, .hb:hover { filter: brightness(.96); }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px var(--float-shadow); }
+}
+@media (min-width: 600px) { .grid { column-count: 3; column-gap: 18px; } }
+@media (min-width: 900px) { .grid { column-count: 4; column-gap: 20px; } }
+@media (max-width: 599px) {
+  header { padding: 16px 18px; gap: 13px; }
+  .logo { font-size: 28px; }
+  main { padding: 17px 16px calc(116px + env(safe-area-inset-bottom)); }
+  .hero { padding: 30px 18px 28px; border-radius: 26px; margin-bottom: 20px; }
+  .hero h1 { font-size: 36px; letter-spacing: -.055em; }
+  .hero .mut { font-size: 13px; }
+  .card { padding: 6px; border-radius: 21px; }
+  .ph { border-radius: 15px; }
+  .info { padding: 11px 4px 6px; }
+  .nm { font-size: 13px; }
+  .price { font-size: 16px; }
+  .card .btn { font-size: 12px !important; }
+  .sheet > div { padding: 27px 22px; border-radius: 26px; }
+}
+@media (max-width: 479px) {
+  header { flex-wrap: wrap; }
+  header > div:last-child { flex: 1 1 100%; justify-content: flex-end; }
+  header > div:last-child .tg { margin-right: auto; }
+  .hb { padding-inline: 17px; }
+  .heart { top: 6px; right: 6px; }
+  .tag { left: 6px; top: 9px; padding-inline: 8px; }
+  .box { padding: 18px; }
+  .row.box { padding: 14px 16px; }
+}
+@media (max-width: 359px) {
+  main { padding-inline: 12px; }
+  .grid { column-gap: 10px; }
+  .hero { padding-inline: 13px; }
+  .hero h1 { font-size: 32px; }
+  .hero .eyebrow { font-size: 11px; padding-inline: 12px; }
+  .info .mut { font-size: 11px; }
+  .card .btn { padding-inline: 6px !important; }
+  .sheet { padding-left: 12px; padding-right: 12px; }
+  .sheet > div { padding: 24px 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
+}
+</style></head><body>
+<header><div class="logo">Thriftopia</div><div><button class="tg" onclick="toggleMode()" aria-label="Switch between light and dark mode"><span class="k"><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span></button><button class="hb" id="inst" hidden onclick="install()">Install</button><button class="hb bag" onclick="openCart()">Bag (<span id="cc">0</span>)</button></div></header>
+<main id="m"></main><nav id="nav"></nav><div id="ov"></div>
+<script>
+const CFG={wa:'260770855669',pay:{'Airtel Money':{num:'0977255744',name:'Wisdom Kalumba'},'MTN MoMo':{num:'0961661698',name:'Adrian Daka'}},
+areas:{'Pickup in Lusaka (free)':0,'Kabulonga':30,'Woodlands':30,'Chilenje':25,'Matero':35,'Kalingalinga':25,'Other Lusaka':50}};
+const sb=supabase.createClient('https://lxoomutcglxrekyhnqic.supabase.co','sb_publishable_gbdBmTnjiwjwujxxA3zdlQ_ukLkOCkN');
+const LS=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}};
+const TH=['light','dark','blue','green'];let theme=localStorage.getItem('thr_t')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
+const setTheme=t=>{theme=t;localStorage.setItem('thr_t',t);document.documentElement.dataset.theme=t;document.querySelector('meta[name=theme-color]').content=getComputedStyle(document.body).backgroundColor},cycleTheme=()=>{setTheme(TH[(TH.indexOf(theme)+1)%TH.length]);if(me)draw()},toggleMode=()=>{setTheme(theme=='light'?'dark':'light');if(me)draw()};setTheme(theme);
+let cart=LS('thr_c',[]),wish=LS('thr_w',[]),me=null,P=[],D={orders:[],topups:[],trades:[]},A={orders:[],topups:[],trades:[]},tab='shop',cat='All',q='',dp=null,mode='in';
+const CATS=['All','Tops','Dresses','Shoes','Bags','Kids'],ST=['Received','Packed','Out for delivery','Delivered'];
+const sv=()=>{localStorage.setItem('thr_c',JSON.stringify(cart));localStorage.setItem('thr_w',JSON.stringify(wish))};
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const K=n=>'K'+Number(n).toLocaleString(),$=s=>document.querySelector(s),dt=x=>new Date(x).toLocaleString(),byId=i=>P.find(p=>p.id==i);
+const wa=t=>window.open('https://wa.me/'+CFG.wa+'?text='+encodeURIComponent(t),'_blank');
+const run=async(f)=>{try{await f()}catch(e){alert(e.message||e)}};
+function tile(p){return `<div class="card"><div class="ph" style="background:${esc(p.color)}${p.image_url?'':';aspect-ratio:'+['4/5','1/1','3/4'][p.id%3]}">${p.image_url?`<img src="${esc(p.image_url)}" alt="${esc(p.name)}" loading="lazy">`:`<span class="mono">${esc(p.cat[0])}</span>`}${p.is_new?'<span class="tag">New</span>':''}<button class="heart" onclick="wishT(${p.id})" aria-label="Wishlist">${wish.includes(p.id)?'♥':'♡'}</button></div><div class="info"><div class="nm">${esc(p.name)}</div><div class="mut">${esc(p.cat)} · Size ${esc(p.size)} · ${esc(p.cond)}</div><div class="price">${K(p.price)}</div><button class="btn full" style="margin-top:10px;padding:10px" onclick="add(${p.id})">${cart.includes(p.id)?'In bag ✓':'Add to bag'}</button></div></div>`}
+function gridHtml(){const r=P.filter(p=>(cat=='All'||p.cat==cat)&&p.name.toLowerCase().includes(q.toLowerCase()));return r.map(tile).join('')||'<p class="mut">Nothing found.</p>'}
+function list(){$('#g').innerHTML=gridHtml()}
+const V={
+shop:()=>`<div class="hero"><p class="eyebrow">Lusaka · Pre-loved fashion</p><h1>Considered finds.<br>One of a kind.</h1><p class="mut">Every piece is unique. Once it’s gone, it’s gone.</p></div>
+<input id="q" placeholder="Search items…" value="${esc(q)}" oninput="q=this.value;list()"><div class="chips">${CATS.map(c=>`<button class="chip ${c==cat?'on':''}" onclick="cat='${c}';draw()">${c}</button>`).join('')}</div><div class="grid" id="g">${gridHtml()}</div>`,
+trade:()=>`<h2 style="margin:8px 0">Trade in</h2><p class="mut" style="margin-bottom:12px">Send us your clothes. We reply with an offer in store credit or a swap.</p><div class="box">
+<label>What are you trading?</label><input id="t1" placeholder="e.g. Zara black jeans"><label>Size</label><input id="t2"><label>Condition</label><select id="t3"><option>Like new</option><option>Good</option><option>Fair</option></select><label>Notes</label><textarea id="t4" rows="2"></textarea>
+<p class="mut" style="margin-bottom:10px">After sending, attach 2–3 clear photos in the WhatsApp chat.</p><button class="btn full" onclick="trade()">Send trade request</button></div>
+<h3 style="margin:14px 0 6px">Your requests</h3>${D.trades.map(t=>`<div class="box"><div class="row"><b>${esc(t.item)}</b><span class="eyebrow">${esc(t.status)}</span></div><p class="mut">${dt(t.created_at)}</p>${t.offer?`<p>Offer: <b>${esc(t.offer)}</b></p>`:'<p class="mut">Waiting for our offer.</p>'}${t.offer&&['New','Offered'].includes(t.status)?`<div class="acts"><button class="btn sm" onclick="resp(${t.id},true)">Accept</button><button class="btn sm alt" onclick="resp(${t.id},false)">Decline</button></div>`:''}</div>`).join('')||'<p class="mut">No trade requests yet.</p>'}`,
+wallet:()=>`<h2 style="margin:8px 0">Wallet</h2><div class="box"><p class="eyebrow">Balance</p><h2 style="font-size:46px">${K(me.balance)}</h2><p class="mut">Updated once your top-up is confirmed.</p></div><div class="box"><h3>Top up</h3><label>Pay by</label><select id="tm" onchange="pinfo()">${Object.keys(CFG.pay).map(k=>`<option>${k}</option>`).join('')}</select><p class="mut" id="ti" style="margin-bottom:12px"></p><label>Amount (K)</label><input id="a" type="number" inputmode="numeric"><label>Transaction reference</label><input id="r"><button class="btn full" onclick="topup()">I’ve paid, confirm top-up</button></div>
+<h3 style="margin:14px 0 6px">History</h3>${D.topups.map(t=>`<div class="row box"><span>${K(t.amount)} · ${esc(t.ref)}<br><span class="mut">${dt(t.created_at)}</span></span><b>${esc(t.status)}</b></div>`).join('')||'<p class="mut">No top-ups yet.</p>'}`,
+orders:()=>`<h2 style="margin:8px 0">Orders</h2>${D.orders.map(o=>`<div class="box"><div class="row"><b>#${o.id}</b><span class="eyebrow">${esc(o.status)}</span></div><p class="mut">${dt(o.created_at)}</p><p>${o.items.map(i=>esc(i.name)).join(', ')}</p><b>${K(o.total)}</b><p class="mut">${esc(o.area)} · ${esc(o.method)}</p><div class="mut" style="margin-top:6px">Received → Packed → Out for delivery → Delivered</div></div>`).join('')||'<p class="mut">No orders yet.</p>'}`,
+me:()=>`<h2 style="margin:8px 0">Profile</h2><div class="box"><b>${esc(me.name)}</b><p class="mut">${esc(me.phone)} · ${esc(me.email)}</p></div><div class="box"><h3>Appearance</h3><div class="acts" style="margin-bottom:0">${TH.map(t=>`<button class="btn sm ${t==theme?'':'alt'}" onclick="setTheme('${t}');draw()">${t}</button>`).join('')}</div></div><div class="box"><h3>Install the app</h3><p class="mut">Add Thriftopia to your home screen.</p><br><button class="btn full" onclick="install()">Install Thriftopia</button></div>
+<div class="box"><h3>Wishlist</h3><div class="grid">${wish.map(byId).filter(Boolean).map(tile).join('')||'<p class="mut">Tap the heart on any item.</p>'}</div></div><button class="btn alt full" onclick="out()">Log out</button>`,
+admin:()=>`<h2 style="margin:8px 0">Admin</h2><div class="box"><h3>Add item</h3><label>Name</label><input id="an"><label>Category</label><select id="ac">${CATS.slice(1).map(c=>`<option>${c}</option>`).join('')}</select><label>Size</label><input id="as" value="One size"><label>Condition</label><select id="aq"><option>Like new</option><option selected>Good</option><option>Fair</option></select><label>Price (K)</label><input id="ap" type="number" inputmode="numeric"><label>Photo</label><input id="af" type="file" accept="image/*"><label><input id="aw" type="checkbox" style="width:auto;margin-right:8px">Mark as new</label><br><br><button class="btn full" onclick="addP()">Add item</button></div>
+<h3 style="margin:14px 0 6px">Top-ups to review</h3>${A.topups.filter(t=>t.status=='Pending').map(t=>`<div class="box"><b>${K(t.amount)}</b> · ${esc(t.method)} · ${esc(t.ref)}<p class="mut">${esc(t.profiles?.name)} ${esc(t.profiles?.phone)} · ${dt(t.created_at)}</p><div class="acts"><button class="btn sm" onclick="apr(${t.id},true)">Approve</button><button class="btn sm alt" onclick="apr(${t.id},false)">Reject</button></div></div>`).join('')||'<p class="mut">Nothing pending.</p>'}
+<h3 style="margin:14px 0 6px">Orders</h3>${A.orders.map(o=>`<div class="box"><div class="row"><b>#${o.id} · ${K(o.total)}</b><span class="eyebrow">${esc(o.status)}</span></div><p>${o.items.map(i=>esc(i.name)).join(', ')}</p><p class="mut">${esc(o.profiles?.name)} ${esc(o.profiles?.phone)}<br>${esc(o.area)} · ${esc(o.method)}${o.ref?' · ref '+esc(o.ref):''}</p>${['Cancelled','Delivered'].includes(o.status)?'':`<div class="acts"><select onchange="stat(${o.id},this.value)">${ST.map(s=>`<option ${s==o.status?'selected':''}>${s}</option>`).join('')}</select><button class="btn sm alt" onclick="cancelO(${o.id})">Cancel order</button></div>`}</div>`).join('')||'<p class="mut">No orders.</p>'}
+<h3 style="margin:14px 0 6px">Trade-ins</h3>${A.trades.map(t=>`<div class="box"><div class="row"><b>${esc(t.item)}</b><span class="eyebrow">${esc(t.status)}</span></div><p class="mut">${esc(t.size)} · ${esc(t.cond)} · ${esc(t.notes)}<br>${esc(t.profiles?.name)} ${esc(t.profiles?.phone)}</p>${['New','Offered'].includes(t.status)?`<div class="acts"><input id="of${t.id}" placeholder="Offer, e.g. K80 credit" value="${esc(t.offer)}"><button class="btn sm" onclick="offer(${t.id})">Send offer</button></div>`:`<p>Offer: ${esc(t.offer)}</p>`}</div>`).join('')||'<p class="mut">No trade-ins.</p>'}
+<h3 style="margin:14px 0 6px">Items for sale</h3>${P.map(p=>`<div class="row"><span>${esc(p.name)} <span class="mut">${K(p.price)}</span></span><button class="btn sm alt" onclick="delP(${p.id})">Delete</button></div>`).join('')}`};
+const sv_=d=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
+const IC={shop:sv_('<path d="M3 10l9-7 9 7v10H3z"/>'),trade:sv_('<path d="M4 8h14l-3-3M20 16H6l3 3"/>'),wallet:sv_('<rect x="3" y="6" width="18" height="13" rx="1"/><path d="M3 10h18M16 14h2"/>'),orders:sv_('<path d="M4 7l8-4 8 4v10l-8 4-8-4zM4 7l8 4 8-4M12 11v10"/>'),me:sv_('<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/>'),admin:sv_('<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>')};
+function draw(){if(!me)return;const tabs=[['shop','Shop'],['trade','Trade'],['wallet','Wallet'],['orders','Orders'],['me','Profile']];if(me.is_admin)tabs.push(['admin','Admin']);
+$('#m').innerHTML=V[tab]();$('#cc').textContent=cart.length;$('#nav').innerHTML=tabs.map(a=>`<button class="${tab==a[0]?'on':''}" onclick="tab='${a[0]}';draw();scrollTo(0,0)">${IC[a[0]]}${a[1]}</button>`).join('');if(tab=='wallet')pinfo()}
+function pinfo(){const c=CFG.pay[$('#tm').value];$('#ti').innerHTML=`Send to <b>${c.num}</b> (name: <b>${c.name}</b>), then enter the details.`}
+function add(i){cart=cart.includes(i)?cart.filter(x=>x!=i):[...cart,i];sv();draw()}
+function wishT(i){wish=wish.includes(i)?wish.filter(x=>x!=i):[...wish,i];sv();draw()}
+function close_(){$('#ov').innerHTML=''}
+function openCart(){if(!me)return;const it=cart.map(byId).filter(Boolean),sub=it.reduce((a,p)=>a+p.price,0);
+$('#ov').innerHTML=`<div class="sheet" onclick="if(event.target==this)close_()"><div><h2>Your bag</h2>${it.map(p=>`<div class="row"><span>${esc(p.name)}<br><span class="mut">Size ${esc(p.size)}</span></span><span>${K(p.price)} <button class="chip" onclick="add(${p.id});openCart()">✕</button></span></div>`).join('')||'<p class="mut">Your bag is empty.</p>'}
+${it.length?`<label>Delivery</label><select id="ar" onchange="tot()">${Object.entries(CFG.areas).map(([k,v])=>`<option value="${v}">${k}${v?' (+K'+v+')':''}</option>`).join('')}</select>
+<label>Pay with</label><select id="py" onchange="tot()"><option value="Wallet">Wallet (${K(me.balance)})</option>${Object.keys(CFG.pay).map(k=>`<option>${k}</option>`).join('')}</select>
+<div class="box" id="pi" hidden><p class="mut">Send <b id="tt"></b> to <b id="pn"></b>, then enter the reference.</p><br><input id="rf" placeholder="Transaction reference"></div>
+<div class="row"><b>Total</b><b id="tt2"></b></div><button class="btn full" onclick="order()">Place order</button>`:''}</div></div>`;if(it.length)tot()}
+function tot(){const s=cart.reduce((a,i)=>a+byId(i).price,0)+ +$('#ar').value,m=$('#py').value;$('#tt').textContent=$('#tt2').textContent=K(s);$('#pi').hidden=m=='Wallet';if(m!='Wallet'){const c=CFG.pay[m];$('#pn').textContent=c.num+' (name: '+c.name+')'}}
+const order=()=>run(async()=>{const it=cart.map(byId).filter(Boolean),f=+$('#ar').value,m=$('#py').value,ref=m=='Wallet'?'':$('#rf').value.trim(),ar=$('#ar').selectedOptions[0].text;
+if(m!='Wallet'&&!ref)return alert('Enter your payment reference after paying.');
+const t=it.reduce((a,p)=>a+p.price,0)+f,r=await sb.rpc('place_order',{p_ids:it.map(p=>p.id),p_fee:f,p_area:ar,p_method:m,p_ref:ref||null});
+if(r.error){await load();return alert(r.error.message)}
+wa(`New Thriftopia order #${r.data}\nName: ${me.name}\nPhone: ${me.phone}\n${it.map(p=>`- ${p.name} (${p.size}) ${K(p.price)}`).join('\n')}\nDelivery: ${ar}\nTotal: ${K(t)}\nPaid via ${m}${ref?', ref: '+ref:''}`);
+cart=[];sv();close_();tab='orders';await load()});
+const topup=()=>run(async()=>{const a=+$('#a').value,r=$('#r').value.trim(),m=$('#tm').value;if(!(a>0)||!r)return alert('Enter amount and reference.');
+const e=(await sb.from('topups').insert({user_id:me.id,amount:a,method:m,ref:r})).error;if(e)return alert(e.message);
+wa(`Thriftopia top-up request\nName: ${me.name}\nPhone: ${me.phone}\nAmount: ${K(a)}\n${m} ref: ${r}`);await load()});
+const trade=()=>run(async()=>{const g=i=>$('#t'+i).value.trim();if(!g(1))return alert('Tell us what you’re trading.');
+const e=(await sb.from('trades').insert({user_id:me.id,item:g(1),size:g(2),cond:g(3),notes:g(4)})).error;if(e)return alert(e.message);
+wa(`Thriftopia trade-in request\nName: ${me.name}\nPhone: ${me.phone}\nItem: ${g(1)}\nSize: ${g(2)}\nCondition: ${g(3)}\nNotes: ${g(4)}`);await load()});
+const resp=(id,ok)=>run(async()=>{const e=(await sb.rpc('respond_trade',{p_id:id,p_accept:ok})).error;if(e)alert(e.message);await load()});
+// admin
+const addP=()=>run(async()=>{const n=$('#an').value.trim(),p=+$('#ap').value;if(!n||!(p>0))return alert('Enter a name and price.');let url=null;const f=$('#af').files[0];
+if(f){const path=Date.now()+'-'+f.name.replace(/[^\w.]/g,'_'),u=await sb.storage.from('photos').upload(path,f);if(u.error)return alert(u.error.message);url=sb.storage.from('photos').getPublicUrl(path).data.publicUrl}
+const e=(await sb.from('products').insert({name:n,cat:$('#ac').value,size:$('#as').value.trim()||'One size',cond:$('#aq').value,price:p,image_url:url,is_new:$('#aw').checked})).error;if(e)return alert(e.message);await load()});
+const delP=id=>run(async()=>{if(!confirm('Delete this item?'))return;const e=(await sb.from('products').delete().eq('id',id)).error;if(e)alert(e.message);await load()});
+const apr=(id,ok)=>run(async()=>{const e=(await sb.rpc('approve_topup',{p_id:id,p_ok:ok})).error;if(e)alert(e.message);await load()});
+const stat=(id,s)=>run(async()=>{const e=(await sb.from('orders').update({status:s}).eq('id',id)).error;if(e)alert(e.message);await load()});
+const cancelO=id=>run(async()=>{if(!confirm('Cancel this order? Items go back on sale and wallet payments are refunded.'))return;const e=(await sb.rpc('cancel_order',{p_id:id})).error;if(e)alert(e.message);await load()});
+const offer=id=>run(async()=>{const v=$('#of'+id).value.trim();if(!v)return alert('Enter an offer.');const e=(await sb.from('trades').update({offer:v,status:'Offered'}).eq('id',id)).error;if(e)alert(e.message);await load()});
+// auth + data
+function boot(){me=null;$('#m').innerHTML='';$('#nav').innerHTML='';const up=mode=='up';
+$('#ov').innerHTML=`<div class="sheet"><div><div class="logo" style="font-size:32px">Thriftopia</div><p class="mut" style="margin:8px 0 16px">${up?'Create an account to shop, trade and top up.':'Log in to your account.'}</p>${up?'<label>Your name</label><input id="n"><label>Phone number</label><input id="ph" type="tel" placeholder="09XXXXXXXX">':''}<label>Email</label><input id="em" type="email" autocomplete="email"><label>Password</label><input id="pw" type="password" autocomplete="${up?'new-password':'current-password'}" placeholder="At least 6 characters"><button class="btn full" onclick="auth()">${up?'Create account':'Log in'}</button>${up?'':'<p style="text-align:center;margin-top:10px"><button class="lnk" style="margin:0" onclick="reset()">Forgot password?</button></p>'}<br><button class="btn alt full" onclick="mode='${up?'in':'up'}';boot()">${up?'I already have an account':'Create an account'}</button></div></div>`}
+const auth=()=>run(async()=>{const e=$('#em').value.trim(),pw=$('#pw').value;if(!e||!pw)return alert('Enter your email and password.');let r;
+if(mode=='up'){const n=$('#n').value.trim(),ph=$('#ph').value.trim();if(!n||!ph)return alert('Enter your name and phone number.');r=await sb.auth.signUp({email:e,password:pw,options:{data:{name:n,phone:ph},emailRedirectTo:location.origin+location.pathname}});if(!r.error&&!r.data.session)return alert('Account created. Check your email to confirm, then log in.')}
+else r=await sb.auth.signInWithPassword({email:e,password:pw});
+if(r.error)return alert(r.error.message);close_();await load()});
+let rec=false;
+const reset=()=>run(async()=>{const e=$('#em').value.trim();if(!e)return alert('Type your email above first.');const r=await sb.auth.resetPasswordForEmail(e);if(r.error)return alert(r.error.message);
+$('#ov').innerHTML=`<div class="sheet"><div><h2>Enter your code</h2><p class="mut" style="margin:8px 0 16px">If ${esc(e)} has an account, we’ve emailed it a code. Enter it below.</p><input id="cd" inputmode="numeric" autocomplete="one-time-code" placeholder="Code from your email"><button class="btn full" onclick="verify('${esc(e)}')">Continue</button><br><br><button class="btn alt full" onclick="boot()">Back to login</button></div></div>`});
+const verify=e=>run(async()=>{const t=$('#cd').value.trim();if(!t)return alert('Enter the code from your email.');const r=await sb.auth.verifyOtp({email:e,token:t,type:'recovery'});if(r.error)return alert(r.error.message);rec=true;await load()});
+sb.auth.onAuthStateChange(ev=>{if(ev=='PASSWORD_RECOVERY'){rec=true;setTimeout(newPw,300)}});
+function newPw(){$('#ov').innerHTML=`<div class="sheet"><div><h2>Set a new password</h2><p class="mut" style="margin:8px 0 16px">Choose a password with at least 6 characters.</p><input id="np" type="password" autocomplete="new-password"><button class="btn full" onclick="savePw()">Save password</button></div></div>`}
+const savePw=()=>run(async()=>{const p=$('#np').value;if(p.length<6)return alert('Use at least 6 characters.');const e=(await sb.auth.updateUser({password:p})).error;if(e)return alert(e.message);rec=false;alert('Password updated.');await load()});
+const out=()=>run(async()=>{await sb.auth.signOut();cart=[];sv();tab='shop';boot()});
+async function load(){const s=(await sb.auth.getSession()).data.session;if(!s)return boot();const u=s.user.id,mine=t=>sb.from(t).select('*').eq('user_id',u).order('id',{ascending:false});
+const r=await Promise.all([sb.from('profiles').select('*').eq('id',u).single(),sb.from('products').select('*').eq('sold',false).order('id'),mine('orders'),mine('topups'),mine('trades')]);
+if(r[0].error)return alert('Could not load your profile: '+r[0].error.message);
+me=r[0].data;P=r[1].data||[];D={orders:r[2].data||[],topups:r[3].data||[],trades:r[4].data||[]};cart=cart.filter(i=>byId(i));
+if(me.is_admin){const all=t=>sb.from(t).select('*,profiles(name,phone)').order('id',{ascending:false}).limit(60),a=await Promise.all([all('orders'),all('topups'),all('trades')]);A={orders:a[0].data||[],topups:a[1].data||[],trades:a[2].data||[]}}
+else if(tab=='admin')tab='shop';
+close_();draw();if(rec)newPw()}
+const ios=/iphone|ipad|ipod/i.test(navigator.userAgent),stand=matchMedia('(display-mode:standalone)').matches||navigator.standalone;
+function install(){if(dp){dp.prompt();dp=null;$('#inst').hidden=true}else if(stand)alert('Thriftopia is already installed.');else if(ios)alert('On iPhone: tap the Share button in Safari, then “Add to Home Screen”.');else alert('Open your browser menu (⋮) and tap “Install app” or “Add to Home screen”.')}
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('#inst').hidden=false});
+if(!stand)$('#inst').hidden=false;
+if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+load();
+</script></body></html>
